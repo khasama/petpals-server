@@ -6,7 +6,7 @@ const PetService = {};
 
 PetService.getAllPet = async () => {
     try {
-        const pets = await PetModel.findAll();
+        const pets = await PetModel.find();
         return pets;
     } catch (error) {
         throw error;

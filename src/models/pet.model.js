@@ -30,6 +30,10 @@ const petSchema = new Schema(
             type: String,
             required: true,
             ref: "subcategories",
+        },
+        status: {
+            type: String,
+            default: 'sale'
         }
     },
     { timestamps: true }

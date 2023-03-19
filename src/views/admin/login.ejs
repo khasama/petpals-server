@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head') %>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <div class="mx-auto mt-2 w-25">
+            <div id="fomr-login">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" autocomplete="off">
+                </div>
+
+                <button class="btn btn-primary" onclick="login()">Login</button>
+            </div>
+        </div>
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <%- include('partials/bot') %>
+
+        <script>
+            document.getElementById("fomr-login").addEventListener("keypress", (event) => {
+                if (event.key === "Enter") {
+                    login();
+                }
+            });
+        </script>
+
+</body>
+
+</html>

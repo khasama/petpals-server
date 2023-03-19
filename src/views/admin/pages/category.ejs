@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head') %>
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- slide trái -->
+        <%- include('../partials/left') %>
+            <!-- End slide trái -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <!-- Top bar -->
+                    <%- include('../partials/top') %>
+                        <!-- End of Top bar -->
+
+                        <!-- Begin Page Content -->
+                        <div class="container-fluid" style="margin-top: 20px;">
+
+                            <!-- DataTales Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" style="display: inline;">Categories
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Category</th>
+                                                    <th>Slug</th>
+                                                    <th style="width: 25%;">
+                                                        <a href="javascript:void(0)" data-toggle="modal"
+                                                            data-target="#newCategoryModal">
+                                                            New
+                                                        </a>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% categories.forEach(category=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%- category._id %>
+                                                        </td>
+                                                        <td>
+                                                            <%- category.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%- category.slug %>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:void(0)" data-id="<%- category._id %>"
+                                                                class="btn btn-primary"
+                                                                onclick="getCategory(this)">Detail</a>
+                                                            <a href="javascript:void(0)" class="btn btn-danger"
+                                                                data-id="<%- category._id %>" onclick="">Delete</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="newCategoryModal" tabindex="-1" role="dialog"
+                                aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 40%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">NEW CATEGORY</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="Category">Category:</label>
+                                                <input type="text" class="form-control" id="addCategoryName"
+                                                    autocomplete="off">
+                                            </div>
+                                            <button id="newCategory" class="btn btn-primary">Create</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 70%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">CATEGORY</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="Category">Category:</label>
+                                                    <input type="text" class="form-control" id="updateCategoryName"
+                                                        autocomplete="off">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Slug">Slug:</label>
+                                                    <input type="text" class="form-control" id="updateCategorySlug"
+                                                        disabled>
+                                                </div>
+                                                <input type="hidden" id="idCategory">
+                                                <button id="updateCategory" class="btn btn-primary">Save</button>
+                                            </div>
+                                            <div class="table-responsive mt-2">
+                                                <table class="table table-bordered" id="dataTable2" width="100%"
+                                                    cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Sub category</th>
+                                                            <th>Slug</th>
+                                                            <th style="width: 40%;">
+                                                                <div style="display: flex !important;">
+                                                                    <input type="text" class="form-control"
+                                                                        id="addSubcategoryName">
+                                                                    <a href="javascript:void(0)" id="newSubcategory"
+                                                                        style="margin-left: 9px;line-height: 36px;">
+                                                                        New
+                                                                    </a>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="subcategoryData">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <%- include('../partials/footer') %>
+                    <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+    </div>
+    <div id="alert-area" class="position-absolute" style="top: 20px; right: 20px;"></div>
+    <!-- End of Page Wrapper -->
+
+    <%- include('../partials/bot') %>
+
+</body>
+
+</html>

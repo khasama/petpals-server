@@ -1,11 +1,14 @@
 require("dotenv").config();
+
 const express = require("express");
 const app = express();
+const http = require("http");
+const server = http.createServer(app);
 const createError = require("http-errors");
 const cors = require("cors");
 const session = require("express-session");
 // const compression = require("compression");
-// const connect = require("./src/configs/mongo");
+const connect = require("./src/configs/mongo");
 const fileUpload = require("express-fileupload");
 // const Redis = require("ioredis");
 // const RedisStore = require("connect-redis").default;
@@ -22,6 +25,7 @@ app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
 app.set("view engine", "ejs");
+app.set("views", "./src/views");
 app.use("/public", express.static("./src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -51,14 +55,16 @@ io.on("connection", (socket) => {
 // app.use("/api/v1", require("./src/routes"));
 app.use(require("./src/routes"));
 
-app.use((req, res, next) => {
-    next(createError.NotFound());
-});
-app.use((err, req, res, next) => {
-    return res.status(err.status).json({
-        status: "error",
-        message: err.message,
-    });
-})
+connect();
+
+// app.use((req, res, next) => {
+//     next(createError.NotFound());
+// });
+// app.use((err, req, res, next) => {
+//     return res.status(err.status).json({
+//         status: "error",
+//         message: err.message,
+//     });
+// });
 
 module.exports = app;

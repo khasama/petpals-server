@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
-// const logger = require("../utils/log");
+
 
 const USER = process.env.MONGO_USER;
 const PASS = process.env.MONGO_PASS;
@@ -14,11 +13,7 @@ const connectDB = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-
-        // logger.info("Connect database success");
     } catch (err) {
-        // logger.error(err.stack || err);
-        // console.log("Error " + err.message);
         process.exit(1);
     }
 };
