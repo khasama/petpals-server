@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const CategoryController = require("./category.controller");
 const ItemController = require("./item.controller");
+const ProductController = require("./product.controller");
 // const EpisodeController = require("./episode.controller");
 // const LinkController = require("./link.controller");
 // const UserController = require("./user.controller");
@@ -23,7 +24,7 @@ AdminController.dashboard = async (req, res) => {
 module.exports = {
     CategoryController,
     ItemController,
-    // EpisodeController,
+    ProductController,
     // LinkController,
     // UserController,
     // ToolController,

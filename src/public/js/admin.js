@@ -1,15 +1,22 @@
-let addContent, editContent, currentMovie;
+let addProductDescription, updateProductDescription;
 const base = `${window.origin}/admin`;
 const api = `${window.origin}/api/v1`;
 let subcategoryTable = $("#dataTable2").DataTable();
 let subitemTable = $("#dataTable3").DataTable();
 $(document).ready(function () {
 
+    ClassicEditor.create(document.querySelector("#addProductDescription")).then(
+        (editor) => {
+            addProductDescription = editor;
+        }
+    );
+    ClassicEditor.create(document.querySelector("#updateProductDescription")).then(
+        (editor) => {
+            updateProductDescription = editor;
+        }
+    );
+
     $("#dataTable").DataTable({ "order": [] });
-
-    // new DataTable('#dataTable2');
-
-
 
     $("#newMovie").click(() => {
         const formData = new FormData();
@@ -147,6 +154,140 @@ $(document).ready(function () {
         }
     });
 
+    $("#addProductItem").change(function () {
+        const idItem = $(this).val();
+        if (idItem != 0) {
+            $.ajax({
+                url: `${api}/item/${idItem}`,
+                success: (result) => {
+                    if (result.status == "success") {
+                        const subitems = result.data.subitem;
+                        const list = $("#addProductSubitem");
+                        list.html("");
+                        subitems.forEach((ele) => {
+                            list.append(`
+                            <option value="${ele._id}">
+                                ${ele.name}
+                            </option>
+                            `);
+                        });
+                    } else {
+                        showAlert("danger", `${result.message}`);
+                    }
+                }
+            });
+        } else {
+            $("#addProductSubitem").html("");
+        }
+
+    });
+
+    $("#updateProductItem").change(function () {
+        const idItem = $(this).val();
+        $.ajax({
+            url: `${api}/item/${idItem}`,
+            success: (result) => {
+                if (result.status == "success") {
+                    const subitems = result.data.subitem;
+                    const list = $("#updateProductSubitem");
+                    list.html("");
+                    subitems.forEach((ele) => {
+                        list.append(`
+                        <option value="${ele._id}">
+                            ${ele.name}
+                        </option>
+                        `);
+                    });
+                } else {
+                    showAlert("danger", `${result.message}`);
+                }
+            }
+        });
+
+    });
+
+    $("#addProduct").click(() => {
+        const formData = new FormData();
+        const name = $("#addProductName").val().trim();
+        const price = $("#addProductPrice").val();
+        const item = $("#addProductItem").val();
+        const subitem = $("#addProductSubitem").val();
+        const description = addProductDescription.getData();
+        const images = $("#addProductImages")[0];
+        if (name && price && item != 0 && subitem && description) {
+            if (images.files.length > 0) {
+                formData.append("name", name);
+                formData.append("price", price);
+                formData.append("description", description);
+                formData.append("item", item);
+                formData.append("subitem", subitem);
+                for (let i = 0; i < images.files.length; i++) {
+                    formData.append(`image_${i}`, images.files[i]);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: `${base}/product/`,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: (result) => {
+                        if (result.status == "success") {
+                            showAlert("success", `success`);
+                            location.reload();
+                        } else {
+                            showAlert("danger", `${result.message}`);
+                        }
+                    }
+                });
+            } else {
+                showAlert("danger", `Phải có ít nhất 1 ảnh`);
+            }
+        } else {
+            showAlert("danger", `Vui lòng điền đầy đủ thông tin`);
+        }
+
+    });
+
+    $("#updateProduct").click(() => {
+        const formData = new FormData();
+        const id = $("#updateProductId").val();
+        const name = $("#updateProductName").val().trim();
+        const price = $("#updateProductPrice").val();
+        const item = $("#updateProductItem").val();
+        const subitem = $("#updateProductSubitem").val();
+        const description = updateProductDescription.getData();
+        const images = $("#updateProductImages")[0];
+        if (name && price && item != 0 && subitem && description) {
+            formData.append("name", name);
+            formData.append("price", price);
+            formData.append("description", description);
+            formData.append("item", item);
+            formData.append("subitem", subitem);
+            if (images.files.length > 0) {
+                for (let i = 0; i < images.files.length; i++) {
+                    formData.append(`image_${i}`, images.files[i]);
+                }
+            }
+            $.ajax({
+                type: "PUT",
+                url: `${base}/product/${id}`,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: (result) => {
+                    if (result.status == "success") {
+                        showAlert("success", `success`);
+                        location.reload();
+                    } else {
+                        showAlert("danger", `${result.message}`);
+                    }
+                }
+            });
+        } else {
+            showAlert("danger", `Vui lòng điền đầy đủ thông tin`);
+        }
+
+    });
 });
 
 function resetSubcategoryTable(subcategories) {
@@ -204,7 +345,6 @@ function resetSubitemTable(subitems) {
     });
     subitemTable = $("#dataTable3").DataTable();
 }
-
 
 function getCategory(ele) {
     const id = $(ele).attr("data-id");
@@ -286,6 +426,62 @@ function deleteSubitem(ele) {
         });
     }
 
+}
+
+function deleteProduct(ele) {
+    $(ele).prop('disabled', true);
+    const id = $(ele).attr("data-id");
+    if (confirm("Are you sure about that ???")) {
+        $.ajax({
+            type: "DELETE",
+            url: `${base}/product/sd/${id}`,
+            success: (result) => {
+                if (result.status == "success") {
+                    showAlert("success", `Delete success`);
+                    location.reload();
+                } else {
+                    showAlert("danger", `${result.message}`);
+                    $(ele).prop('disabled', false);
+                }
+            }
+        });
+    }
+
+}
+
+function deleteProductImage(ele) {
+    $(ele).prop('disabled', true);
+    const id = $(ele).attr("data-id");
+    const image = $(ele).attr("data-image");
+    if (confirm("Are you sure about that ???")) {
+        $.ajax({
+            type: "PUT",
+            url: `${base}/product/image/${id}`,
+            data: { image },
+            success: (result) => {
+                if (result.status == "success") {
+                    showAlert("success", `Delete success`);
+                    $(`#image-${image}`).remove();
+                } else {
+                    showAlert("danger", `${result.message}`);
+                    $(ele).prop('disabled', false);
+                }
+            },
+            error: (err) => {
+                showAlert("danger", err);
+            }
+        });
+    } else {
+        $(ele).prop('disabled', false);
+
+    }
+
+}
+
+function viewImage(ele) {
+    const uri = $(ele).attr('data-uri');
+    $("#imgZoom").attr("src", uri);
+    $("#zoomImage").modal("show");
 }
 
 function login() {

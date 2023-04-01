@@ -15,6 +15,10 @@ const subcategorySchema = new Schema(
             type: String,
             required: true,
             ref: "categories",
+        },
+        deleted: {
+            type: Boolean,
+            default: false,
         }
     },
     { timestamps: true }

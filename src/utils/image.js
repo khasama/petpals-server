@@ -1,14 +1,11 @@
 const sharp = require('sharp');
 const Image = {};
 
-Image.resize = async (img, type) => {
-    let imgBuffer;
-    if (type == "thumb") {
-        imgBuffer = await sharp(img).resize(285, 400, { fit: 'fill' }).webp().toBuffer();
-    }
-    if (type == "background") {
-        imgBuffer = await sharp(img).resize(550, 300, { fit: 'fill' }).webp().toBuffer();
-    }
+Image.resize = async (img) => {
+    const imgBuffer = await sharp(img)
+        .resize(500, 500, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+        .webp()
+        .toBuffer();
     return imgBuffer;
 }
 

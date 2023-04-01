@@ -30,7 +30,12 @@ const productSchema = new Schema(
             type: String,
             required: true,
             ref: "subitems",
+        },
+        deleted: {
+            type: Boolean,
+            default: false,
         }
+
     },
     { timestamps: true }
 );

@@ -57,14 +57,14 @@ app.use(require("./src/routes"));
 
 connect();
 
-// app.use((req, res, next) => {
-//     next(createError.NotFound());
-// });
-// app.use((err, req, res, next) => {
-//     return res.status(err.status).json({
-//         status: "error",
-//         message: err.message,
-//     });
-// });
+app.use((req, res, next) => {
+    next(createError.NotFound());
+});
+app.use((err, req, res, next) => {
+    return res.status(err.status).json({
+        status: "error",
+        message: err.message,
+    });
+});
 
 module.exports = app;

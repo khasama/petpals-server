@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
-
-const USER = process.env.MONGO_USER;
-const PASS = process.env.MONGO_PASS;
-const DATABASE = process.env.MONGO_DATABASE;
-
-const db = `mongodb+srv://${USER}:${PASS}@mycluster.bkxfl.mongodb.net/${DATABASE}?retryWrites=true&w=majority`;
+const db = process.env.MONGO_URI;
 
 const connectDB = async () => {
     try {

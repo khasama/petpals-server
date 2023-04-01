@@ -20,13 +20,9 @@ async function setFilePublic(fileId) {
 Upload.uploadFile = async (file, share, t) => {
     try {
         let type, folder;
-        if (t === "prod") {
-            type = `image/${file.type}`;
-            folder = process.env.FOLDER_IMAGE_PRODUCTS;
-        } else if (t === "user") {
-            type = `text/${file.type}`;
-            folder = process.env.FOLDER_HLS;
-        }
+        if (t === "product") folder = process.env.FOLDER_IMAGE_PRODUCTS;
+        if (t === "pet") folder = process.env.FOLDER_IMAGE_PETS;
+        if (t === "user") folder = process.env.FOLDER_IMAGE_USERS;
         const createFile = await drive.files.create({
             requestBody: {
                 name: file.name,

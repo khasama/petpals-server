@@ -34,6 +34,10 @@ const petSchema = new Schema(
         status: {
             type: String,
             default: 'sale'
+        },
+        deleted: {
+            type: Boolean,
+            default: false,
         }
     },
     { timestamps: true }

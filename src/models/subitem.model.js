@@ -15,6 +15,10 @@ const subitemSchema = new Schema(
             type: String,
             required: true,
             ref: "items",
+        },
+        deleted: {
+            type: Boolean,
+            default: false,
         }
     },
     { timestamps: true }

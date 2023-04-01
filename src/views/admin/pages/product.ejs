@@ -26,10 +26,11 @@
 
                         <!-- Begin Page Content -->
                         <div class="container-fluid" style="margin-top: 20px;">
+
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary" style="display: inline;">
-                                        <%- server.name %> - <%- links.length %> links
+                                        Products
                                     </h6>
                                 </div>
                                 <div class="card-body">
@@ -37,37 +38,120 @@
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
-                                                    <th>Origin</th>
-                                                    <th>Path</th>
-                                                    <th>Index</th>
-                                                    <th>Main</th>
-                                                    <th><i class="fa-solid fa-gear"></i></th>
+                                                    <th>Name</th>
+                                                    <th>Price</th>
+                                                    <th>Image</th>
+                                                    <th>Item</th>
+                                                    <th>Deleted</th>
+                                                    <th>
+                                                        <a href="javascript:void(0)" data-toggle="modal"
+                                                            data-target="#addProductModal">New</a>
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% links.forEach(link=> { %>
+                                                <% products.forEach(product=> { %>
                                                     <tr>
                                                         <td>
-                                                            <%- link.origin %>
+                                                            <%- product.name %>
                                                         </td>
                                                         <td>
-                                                            <%- link.path %>
+                                                            <%- product.price %>
                                                         </td>
                                                         <td>
-                                                            <%- link.index %>
+                                                            <% product.images.forEach((img, i)=> { %>
+                                                                <a href="javascript:void(0)" class="mr-2"
+                                                                    onclick="viewImage(this)"
+                                                                    data-uri="<%- domain %>media/image/<%- img %>">
+                                                                    Ảnh <%- i+1 %>
+                                                                </a>
+                                                                <%})%>
                                                         </td>
                                                         <td>
-                                                            <%- link.main %>
+                                                            <%- product.item.name %> | <%- product.subitem.name %>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-primary">
-                                                                Embed
-                                                            </button>
+                                                            <%- product.deleted %>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/admin/product/<%- product._id %>"
+                                                                class="btn btn-primary">Edit</a>
+                                                            <a href="javascript:void(0)" class="btn btn-danger"
+                                                                data-id="<%- product._id %>"
+                                                                onclick="deleteProduct(this)">Delete</a>
                                                         </td>
                                                     </tr>
                                                     <% }); %>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 40%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">New Product</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="Name">Name:</label>
+                                                    <input type="text" class="form-control" id="addProductName"
+                                                        autocomplete="off">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Description">Description:</label>
+                                                    <textarea id="addProductDescription"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Images">Image(s):</label>
+                                                    <input type="file" class="form-control" id="addProductImages"
+                                                        multiple accept="image/*">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Price">Price:</label>
+                                                    <input type="number" class="form-control" id="addProductPrice"
+                                                        autocomplete="off">
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <label for="Item" style="line-height: 30px;">Item:</label>
+                                                    <select id="addProductItem" class="w-50 form-control ml-2">
+                                                        <option value="0"></option>
+                                                        <% items.forEach(item=> { %>
+                                                            <option value="<%- item._id %>">
+                                                                <%- item.name %>
+                                                            </option>
+                                                            <% }); %>
+
+                                                    </select>
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <label for="Subitem" style="line-height: 30px;">Sub item:</label>
+                                                    <select id="addProductSubitem" class="w-50 form-control ml-2">
+                                                    </select>
+                                                </div>
+
+                                                <button id="addProduct" class="btn btn-primary">New</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="zoomImage" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 30%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <img src="" id="imgZoom" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +167,6 @@
 
             </div>
             <!-- End of Content Wrapper -->
-            <div id="alert-area" class="position-absolute" style="top: 20px; right: 20px;"></div>
     </div>
     <!-- End of Page Wrapper -->
 
