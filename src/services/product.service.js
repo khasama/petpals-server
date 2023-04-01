@@ -1,10 +1,8 @@
-const mongoose = require("mongoose");
 const ProductModel = require("../models/product.model");
-const slug = require("slug");
 
 const ProductService = {};
 
-ProductService.getAllProd = async () => {
+ProductService.getAllProduct = async () => {
     try {
         const products = await ProductModel.findAll();
         return products;
@@ -13,10 +11,14 @@ ProductService.getAllProd = async () => {
     }
 };
 
-ProductService.getProd = async (id) => {
+ProductService.getProduct = async (_id) => {
     try {
-        const product = await ProductModel.findById({ _id: mongoose.Types.ObjectId(id) });
-        return product;
+        const product = JSON.parse(JSON.stringify(await ProductModel.findById({ _id })));
+        let images = product.images;
+        images = images.map(image => {
+            return `${global.domain}media/image/${image}`;
+        });
+        return { ...product, ...{ images } };
     } catch (error) {
         throw error;
     }

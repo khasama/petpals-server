@@ -6,7 +6,7 @@ const CategoryRoute = require("./category.route");
 const ItemRoute = require("./item.route");
 // const UserRoute = require("./user.route");
 
-// router.use("/product", ProductRoute);
+router.use("/product", ProductRoute);
 // router.get("/pet", PetRoute);
 router.use("/category", CategoryRoute);
 router.use("/item", ItemRoute);

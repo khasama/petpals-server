@@ -114,9 +114,9 @@ ProductController.updateProduct = async (req, res, next) => {
         const { name, price, description, item, subitem } = req.body;
         const images = req.files;
         const _id = req.params.id;
-        if (_id && name && price && description && item && subitem && images) {
+        if (_id && name && price && description && item && subitem) {
             const imgs = JSON.parse(JSON.stringify(await ProductModel.findById({ _id }))).images;
-            const key = Object.keys(images);
+
             const arrImgs = [];
             let product = {
                 name,
@@ -126,22 +126,26 @@ ProductController.updateProduct = async (req, res, next) => {
                 item,
                 subitem
             }
-            for (const img of key) {
-                const i = images[img];
-                const buffer = await image.resize(i.data);
-                const imageId = await drive.uploadFile(
-                    {
-                        name: `${slug(name)}-${img}.webp`,
-                        buffer: buffer,
-                        type: "webp"
-                    }, false, 'product');
-                arrImgs.push(imageId);
+            if (images) {
+                const key = Object.keys(images);
+                for (const img of key) {
+                    const i = images[img];
+                    const buffer = await image.resize(i.data);
+                    const imageId = await drive.uploadFile(
+                        {
+                            name: `${slug(name)}-${img}.webp`,
+                            buffer: buffer,
+                            type: "webp"
+                        }, false, 'product');
+                    arrImgs.push(imageId);
+                }
             }
+
             product = { ...product, ...{ images: [...arrImgs, ...imgs] } };
             await ProductModel.findOneAndUpdate({ _id }, product);
             return res.status(200).json({ status: "success" });
         } else {
-            return res.status(400);
+            return res.status(200).json({ status: "success", message: "Missing params" });
         }
     } catch (error) {
         console.log(error);

@@ -9,7 +9,7 @@ const ItemController = require("./item.controller");
 // const UserController = require("./user.controller");
 
 module.exports = {
-    // ProductController,
+    ProductController,
     // PetController,
     CategoryController,
     ItemController,
