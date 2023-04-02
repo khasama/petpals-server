@@ -35,6 +35,11 @@ const petSchema = new Schema(
             type: String,
             default: 'sale'
         },
+        owner: {
+            type: String,
+            required: true,
+            ref: "users",
+        },
         deleted: {
             type: Boolean,
             default: false,

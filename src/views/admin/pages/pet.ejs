@@ -27,10 +27,10 @@
                         <!-- Begin Page Content -->
                         <div class="container-fluid" style="margin-top: 20px;">
 
-                            <!-- DataTales Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary" style="display: inline;">Anime
+                                    <h6 class="m-0 font-weight-bold text-primary" style="display: inline;">
+                                        Pets
                                     </h6>
                                 </div>
                                 <div class="card-body">
@@ -39,37 +39,43 @@
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
-                                                    <th>AKA</th>
-                                                    <th>Status</th>
-                                                    <th style="width: 25%;">
-                                                        <a href="javascript:void(0)" data-toggle="modal"
-                                                            data-target="#newMovieModal">
-                                                            New
-                                                        </a>
+                                                    <th>Price</th>
+                                                    <th>Image</th>
+                                                    <th>Category</th>
+                                                    <th>Deleted</th>
+                                                    <th>
+                                                        <a href="javascript:void(0)">🛠</a>
                                                     </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% anime.forEach(movie=> { %>
+                                                <% pets.forEach(pet=> { %>
                                                     <tr>
                                                         <td>
-                                                            <%- movie.name %>
+                                                            <%- pet.name %>
                                                         </td>
                                                         <td>
-                                                            <%- movie.aka %>
+                                                            <%- pet.price %>
                                                         </td>
                                                         <td>
-                                                            <%- movie.status %>
+                                                            <% pet.images.forEach((img, i)=> { %>
+                                                                <a href="javascript:void(0)" class="mr-2"
+                                                                    onclick="viewImage(this)"
+                                                                    data-uri="<%- domain %>media/image/<%- img %>">
+                                                                    Ảnh <%- i+1 %>
+                                                                </a>
+                                                                <%})%>
                                                         </td>
                                                         <td>
-                                                            <a href="javascript:void(0)" data-id="<%- movie._id %>"
-                                                                class="btn btn-primary"
-                                                                onclick="getInforMovie(this)">Edit</a>
-                                                            <a href="/episode/movie-<%- movie._id %>"
-                                                                class="btn btn-secondary">Episodes</a>
-                                                            <a href="javascript:void(0)" class="btn btn-danger"
-                                                                data-id="<%- movie._id %>"
-                                                                onclick="deleteMovie(this)">Delete</a>
+                                                            <%- pet.category.name %> | <%- pet.subcategory.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%- pet.deleted %>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/admin/pet/<%- pet._id %>"
+                                                                class="btn btn-primary">Detail</a>
+
                                                         </td>
                                                     </tr>
                                                     <% }); %>
@@ -79,96 +85,18 @@
                                 </div>
                             </div>
 
-                            <div class="modal fade" id="newMovieModal" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog" style="max-width: 40%;">
+                            <div class="modal fade" id="zoomImage" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 30%;">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">NEW MOVIE</h5>
                                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label for="name">Name:</label>
-                                                <input type="text" class="form-control" id="addName" autocomplete="off">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="oname">AKA:</label>
-                                                <input type="text" class="form-control" id="addAka" autocomplete="off">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="Thumbnail">Thumbnail:</label>
-                                                <input type="file" class="form-control" id="addThumb" accept="image/*">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="Background">Background:</label>
-                                                <input type="file" class="form-control" id="addBackground"
-                                                    accept="image/*">
-                                            </div>
-                                            <input type="hidden" id="type" value="anime">
-                                            <button id="newMovie" class="btn btn-primary">Create</button>
-                                        </div>
+                                        <img src="" id="imgZoom" alt="">
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="modal fade" id="updateMovieModal" tabindex="-1" role="dialog"
-                                aria-hidden="true">
-                                <div class="modal-dialog" style="max-width: 40%;">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">UPDATE MOVIE</h5>
-                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div>
-                                                <div class="form-group">
-                                                    <label for="name">Name:</label>
-                                                    <input type="text" class="form-control" id="updateName"
-                                                        autocomplete="off">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="Slug">Slug:</label>
-                                                    <input type="text" class="form-control" id="updateSlug" disabled>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="oname">AKA:</label>
-                                                    <input type="text" class="form-control" id="updateAka"
-                                                        autocomplete="off">
-                                                </div>
-                                                <div class="form-group d-flex">
-                                                    <label for="category" style="line-height: 30px;">Status:</label>
-                                                    <select id="updateStatus" class="w-50 form-control ml-2">
-                                                        <option value="Hoàn thành"> Hoàn thành </option>
-                                                        <option value="Đang tiến hành">
-                                                            Đang tiến hành
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="Thumbnail">Thumbnail:</label>
-                                                    <input type="file" class="form-control" id="updateThumb"
-                                                        accept="image/*">
-                                                    <img src="" alt="" id="current-thumb" class="mt-2" width="200">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="Background">Background:</label>
-                                                    <input type="file" class="form-control" id="updateBackground"
-                                                        accept="image/*">
-                                                    <img src="" alt="" id="current-background" class="mt-2" width="300">
-                                                </div>
-
-                                                <input type="hidden" id="idMovie">
-                                                <button id="updateMovie" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                         <!-- -->
 
@@ -181,9 +109,7 @@
 
             </div>
             <!-- End of Content Wrapper -->
-
     </div>
-    <!-- <div id="alert-area" class="position-absolute" style="top: 20px; right: 20px;"></div> -->
     <!-- End of Page Wrapper -->
 
     <%- include('../partials/bot') %>

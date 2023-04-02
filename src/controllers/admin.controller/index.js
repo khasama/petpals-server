@@ -5,7 +5,7 @@ require("dotenv").config();
 const CategoryController = require("./category.controller");
 const ItemController = require("./item.controller");
 const ProductController = require("./product.controller");
-// const EpisodeController = require("./episode.controller");
+const PetController = require("./pet.controller");
 // const LinkController = require("./link.controller");
 // const UserController = require("./user.controller");
 // const ToolController = require("./tool.controller");
@@ -25,7 +25,7 @@ module.exports = {
     CategoryController,
     ItemController,
     ProductController,
-    // LinkController,
+    PetController,
     // UserController,
     // ToolController,
     AdminController,

@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const CategoryModel = require("../models/category.model");
 const SubcategoryModel = require("../models/subcategory.model");
 

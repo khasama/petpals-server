@@ -3,6 +3,8 @@ const router = express.Router();
 const { PetController } = require("../../controllers/api.controller");
 
 router.get("/:id", PetController.getPet);
-router.get("/", PetController.getAllPet);
+router.put("/:id", PetController.updatePet);
+router.post("/", PetController.addPet);
+// router.get("/", PetController.getAllPet);
 
 module.exports = router;
