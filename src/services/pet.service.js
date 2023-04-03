@@ -106,4 +106,31 @@ PetService.addPet = async (name, price, description, category, subcategory, imag
     }
 };
 
+PetService.softDeletePet = async (_id) => {
+    try {
+        await PetModel.findOneAndUpdate({ _id }, { deleted: true });
+        return res.status(200).json({ status: "success" });
+    } catch (error) {
+        throw error;
+    }
+};
+
+PetService.deletePetImage = async (_id, image) => {
+    try {
+        const pet = await PetModel.findById({ _id });
+        let images = pet.images;
+        if (images.length > 1) {
+            drive.deleteFile(image);
+            images = images.filter((img) => {
+                return img !== image;
+            });
+            await PetModel.findOneAndUpdate({ _id }, { images });
+        } else {
+            throw new Error('Mỗi sản phẩm phải có ít nhất 1 ảnh');
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = PetService;

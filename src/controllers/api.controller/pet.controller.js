@@ -11,6 +11,7 @@ const PetController = {};
 //         return res.status(200).json({ status: "error", message: error.message });
 //     }
 // };
+
 PetController.getPet = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -40,6 +41,7 @@ PetController.addPet = async (req, res, next) => {
         return res.status(200).json({ status: "error", message: error.message });
     }
 };
+
 PetController.updatePet = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -47,14 +49,40 @@ PetController.updatePet = async (req, res, next) => {
         const images = req.files;
         if (id && name && price && description && category && subcategory && images && idUser) {
             const result = await PetService.updatePet(id, name, price, description, category, subcategory, images, idUser);
-            if (result) {
-                return res.status(200).json({ status: "success" });
-            }
+            if (result) return res.status(200).json({ status: "success" });
             return res.status(200).json({ status: "failed", message: 'Something wrong !!' });
         }
         return res.status(200).json({ status: "failed", message: 'Missing params' });
     } catch (error) {
         return res.status(200).json({ status: "error", message: error.message });
+    }
+};
+
+PetController.softDeletePet = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (id) {
+            const result = await PetService.softDeletePet(id);
+            if (result) return res.status(200).json({ status: "success" });
+        }
+        return res.status(400);
+    } catch (error) {
+        return res.status(500)
+    }
+};
+
+PetController.deletePetImage = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const image = req.body.image;
+        if (id && image) {
+            const result = await PetService.deletePetImage(id, image);
+            if (result) return res.status(200).json({ status: "success" });
+        }
+        return res.status(200).json({ status: "error", message: "missing params" });
+
+    } catch (error) {
+        return res.status(500)
     }
 };
 
