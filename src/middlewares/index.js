@@ -1,9 +1,8 @@
-require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
 
 module.exports = {
-    verifyTokenManager: (type) => {
+    verifyAdmin: (type) => {
         return (req, res, next) => {
             const token = req.session.access_token;
             if (!token) {
@@ -19,14 +18,14 @@ module.exports = {
 
                     switch (type) {
                         case 1:
-                            if (role == "Admin") {
+                            if (role == "admin") {
                                 next();
                                 break;
                             }
                             return next(createError.Forbidden());
 
                         case 2:
-                            if (role == "Admin" || role == "Mod") {
+                            if (role == "admin" || role == "mob") {
                                 next();
                                 break;
                             }
@@ -39,28 +38,25 @@ module.exports = {
             );
         };
     },
-    verifyUser: () => {
-        return (req, res, next) => {
-            const idUser = req.body.idUser || req.params.id;
-            let token;
-            if (req.headers.authorization) {
-                token = req.headers.authorization.split(' ')[1];
-            } else {
-                token = req.session.access_token
+    verifyUser: (req, res, next) => {
+        const idUser = req.body.idUser || req.params.id;
+        let token;
+        if (req.headers.authorization) {
+            token = req.headers.authorization.split(' ')[1];
+        } else {
+            token = req.session.access_token
+        }
+        if (!token) return next(createError.Unauthorized());
+        jwt.verify(
+            token,
+            process.env.ACCESS_TOKEN_SECRET,
+            (err, payload) => {
+                if (err) return next(createError.Unauthorized());
+                const id = payload.id;
+                if (id != idUser) return next(createError.Forbidden());
+                return next();
             }
-            if (!token) return next(createError.Unauthorized());
-            jwt.verify(
-                token,
-                process.env.ACCESS_TOKEN_SECRET,
-                (err, payload) => {
-                    if (err) return next(createError.Unauthorized());
-                    const id = payload.id;
-                    if (id != idUser) return next(createError.Forbidden());
-                    return next();
-                }
-            );
-
-        };
+        );
     },
     checkRef: (req, res, next) => {
         const ref = req.headers.referer;

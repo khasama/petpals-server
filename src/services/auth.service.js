@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/user.model");
+const { signAccessToken } = require("../utils/jwt");
 
 const AUthService = {};
 
@@ -19,8 +20,8 @@ AUthService.login = async (username, password) => {
                     address: user.address,
                     email: user.email,
                 };
-
-                return payload;
+                const accessToken = await signAccessToken(payload);
+                return { ...payload, ...{ accessToken } };
             } else {
                 throw new Error("Wrong pass !!!");
             }

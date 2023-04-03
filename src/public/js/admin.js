@@ -490,15 +490,14 @@ function login() {
     if (username && password) {
         $.ajax({
             type: "POST",
-            url: `${base}/auth/login`,
+            url: `${api}/auth/login`,
             data: {
                 username,
                 password
             },
             success: (result) => {
                 if (result.status == "success") {
-                    alert(result.status);
-                    window.location = '/';
+                    window.location = '/admin';
                 } else {
                     alert(result.message);
                 }

@@ -22,8 +22,9 @@ AuthController.login = async (req, res, next) => {
         const { username, password } = req.body;
         if (username && password) {
             const data = await AuthService.login(username, password);
-            if (data) return res.status(200).json({ status: "success", data });
-            return res.status(200).json({ status: "failed", message: "Something wrong !!" });
+            req.session.access_token = data.accessToken;
+            req.session.user = data;
+            return res.status(200).json({ status: "success", data });
         }
         return res.status(200).json({ status: "failed", message: "Missing params" });
     } catch (error) {

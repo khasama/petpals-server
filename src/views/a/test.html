@@ -94,6 +94,7 @@
                     if (result.status == "success") {
                         const user = result.data;
                         $("#idUser").val(user.id);
+                        sessionStorage.setItem('aT', user.accessToken)
                         alert('success');
                     } else {
                         alert(`Error: ${result.message}`);
@@ -162,6 +163,7 @@
 
         $("#addPet").click(() => {
             const formData = new FormData();
+            const accessToken = sessionStorage.getItem('aT');
             const idUser = $("#idUser").val().trim();
             const name = $("#addPetName").val().trim();
             const price = $("#addPetPrice").val();
@@ -169,7 +171,7 @@
             const subcategory = $("#addPetSubcategory").val();
             const description = $("#addPetDescription").val().trim();
             const images = $("#addPetImages")[0];
-            if (idUser) {
+            if (accessToken) {
                 if (name && price && category != 0 && subcategory && description) {
                     if (images.files.length > 0) {
                         formData.append("name", name);
@@ -184,6 +186,7 @@
                         $.ajax({
                             type: "POST",
                             url: `${api}pet/`,
+                            headers: { Authorization: `Bearer ${accessToken}` },
                             data: formData,
                             processData: false,
                             contentType: false,

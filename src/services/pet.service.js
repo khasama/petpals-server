@@ -32,6 +32,7 @@ PetService.getPet = async (_id) => {
         throw error;
     }
 };
+
 PetService.updatePet = async (_id, name, price, description, category, subcategory, images, idUser) => {
     try {
         const currentPet = JSON.parse(JSON.stringify(await PetModel.findById({ _id })));
