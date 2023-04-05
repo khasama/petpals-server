@@ -22,7 +22,7 @@ CategoryController.addCategory = async (req, res, next) => {
             return res.status(200).json({ status: "success" });
         }
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -37,7 +37,7 @@ CategoryController.addSubcategory = async (req, res, next) => {
             return res.status(200).json({ status: "success", data: subcategories });
         }
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -47,7 +47,7 @@ CategoryController.deleteSubcategory = async (req, res, next) => {
         await SubcategoryModel.findOneAndDelete({ _id: id });
         return res.status(200).json({ status: "success" });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 

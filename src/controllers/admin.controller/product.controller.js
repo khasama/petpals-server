@@ -62,11 +62,10 @@ ProductController.addProduct = async (req, res, next) => {
             await newProduct.save();
             return res.status(200).json({ status: "success" });
         } else {
-            return res.status(400);
+            return res.status(200).json({ status: "failed", message: "Missing params" });
         }
     } catch (error) {
-        console.log(error);
-        return res.status(500);
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -79,7 +78,7 @@ ProductController.softDeleteProduct = async (req, res, next) => {
         }
         return res.status(400);
     } catch (error) {
-        return res.status(500)
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -102,10 +101,10 @@ ProductController.deleteProductImage = async (req, res, next) => {
             }
 
         }
-        return res.status(200).json({ status: "error", message: "missing params" });
+        return res.status(200).json({ status: "failed", message: "missing params" });
 
     } catch (error) {
-        return res.status(500)
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -148,8 +147,7 @@ ProductController.updateProduct = async (req, res, next) => {
             return res.status(200).json({ status: "success", message: "Missing params" });
         }
     } catch (error) {
-        console.log(error);
-        return res.status(500);
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 

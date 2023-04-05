@@ -5,9 +5,22 @@ const drive = require("../utils/drive");
 
 const PetService = {};
 
-PetService.getAllPet = async () => {
+PetService.getAllPet = async (query) => {
     try {
-        const pets = await PetModel.find();
+        let { page, limit, category, subcategory } = query;
+        let filter = { deleted: false };
+        if (!page || page < 0) page = 1;
+        if (!limit || limit < 0) limit = 20;
+        if (category) filter = { ...filter, ...{ category } };
+        if (subcategory) filter = { ...filter, ...{ subcategory } };
+        let pets = await PetModel
+            .find(filter)
+            .sort({ 'createdAt': 'desc' })
+            .limit(limit).skip((page - 1) * limit);
+        pets = JSON.parse(JSON.stringify(pets));
+        pets = pets.map(pet => {
+            return { ...pet, ...{ thumb: `${global.domain}media/image/${pet.images[0]}` } }
+        });
         return pets;
     } catch (error) {
         throw error;

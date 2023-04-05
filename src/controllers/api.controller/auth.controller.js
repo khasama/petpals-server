@@ -13,7 +13,7 @@ AuthController.register = async (req, res, next) => {
         }
         return res.status(200).json({ status: "failed", message: "Missing params" });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -28,7 +28,7 @@ AuthController.login = async (req, res, next) => {
         }
         return res.status(200).json({ status: "failed", message: "Missing params" });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 

@@ -3,14 +3,15 @@ const PetService = require("../../services/pet.service");
 
 const PetController = {};
 
-// PetController.getAllProduct = async (req, res, next) => {
-//     try {
-//         // const products = await ProductService.getAllProduct();
-//         // return res.status(200).json({ status: "success", data: products });
-//     } catch (error) {
-//         return res.status(200).json({ status: "error", message: error.message });
-//     }
-// };
+PetController.getAllPet = async (req, res, next) => {
+    try {
+        const query = req.query;
+        const pets = await PetService.getAllPet(query);
+        return res.status(200).json({ status: "success", data: pets });
+    } catch (error) {
+        return res.status(200).json({ status: "failed", message: error.message });
+    }
+};
 
 PetController.getPet = async (req, res, next) => {
     try {
@@ -19,9 +20,9 @@ PetController.getPet = async (req, res, next) => {
             const pet = await PetService.getPet(id);
             if (pet) return res.status(200).json({ status: "success", data: pet });
         }
-        return res.status(200).json({ status: "error", message: 'Missing params' });
+        return res.status(200).json({ status: "failed", message: 'Missing params' });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -38,7 +39,7 @@ PetController.addPet = async (req, res, next) => {
         }
         return res.status(200).json({ status: "failed", message: 'Missing params' });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -54,7 +55,7 @@ PetController.updatePet = async (req, res, next) => {
         }
         return res.status(200).json({ status: "failed", message: 'Missing params' });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -79,7 +80,7 @@ PetController.deletePetImage = async (req, res, next) => {
             const result = await PetService.deletePetImage(id, image);
             if (result) return res.status(200).json({ status: "success" });
         }
-        return res.status(200).json({ status: "error", message: "missing params" });
+        return res.status(200).json({ status: "failed", message: "missing params" });
 
     } catch (error) {
         return res.status(500)

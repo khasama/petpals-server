@@ -1,8 +1,8 @@
 const PetModel = require("../../models/pet.model");
 
-const petController = {};
+const PetController = {};
 
-petController.petPage = async (req, res, next) => {
+PetController.petPage = async (req, res, next) => {
     try {
         const pets = await PetModel.find().populate('category').populate('subcategory').sort({ 'createdAt': 'desc' });
         return res.render("admin/pages/pet", { pets, domain: global.domain });
@@ -10,7 +10,7 @@ petController.petPage = async (req, res, next) => {
     }
 };
 
-petController.getPet = async (req, res, next) => {
+PetController.getPet = async (req, res, next) => {
     try {
         const _id = req.params.id;
         if (_id) {
@@ -24,7 +24,7 @@ petController.getPet = async (req, res, next) => {
     }
 };
 
-// petController.addProduct = async (req, res, next) => {
+// PetController.addProduct = async (req, res, next) => {
 //     try {
 //         const { name, price, description, item, subitem } = req.body;
 //         const images = req.files;
@@ -63,7 +63,7 @@ petController.getPet = async (req, res, next) => {
 //     }
 // };
 
-// petController.softDeleteProduct = async (req, res, next) => {
+// PetController.softDeleteProduct = async (req, res, next) => {
 //     try {
 //         const _id = req.params.id;
 //         if (_id) {
@@ -76,7 +76,7 @@ petController.getPet = async (req, res, next) => {
 //     }
 // };
 
-// petController.deleteProductImage = async (req, res, next) => {
+// PetController.deleteProductImage = async (req, res, next) => {
 //     try {
 //         const _id = req.params.id;
 //         const image = req.body.image;
@@ -102,7 +102,7 @@ petController.getPet = async (req, res, next) => {
 //     }
 // };
 
-// petController.updateProduct = async (req, res, next) => {
+// PetController.updateProduct = async (req, res, next) => {
 //     try {
 //         const { name, price, description, item, subitem } = req.body;
 //         const images = req.files;
@@ -146,4 +146,4 @@ petController.getPet = async (req, res, next) => {
 //     }
 // };
 
-module.exports = petController;
+module.exports = PetController;

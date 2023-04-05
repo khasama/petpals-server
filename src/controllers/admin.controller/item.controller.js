@@ -22,7 +22,7 @@ ItemController.addItem = async (req, res, next) => {
             return res.status(200).json({ status: "success" });
         }
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -37,7 +37,7 @@ ItemController.addSubitem = async (req, res, next) => {
             return res.status(200).json({ status: "success", data: subitems });
         }
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
@@ -47,7 +47,7 @@ ItemController.deleteSubitem = async (req, res, next) => {
         await SubitemModel.findOneAndDelete({ _id: id });
         return res.status(200).json({ status: "success" });
     } catch (error) {
-        return res.status(200).json({ status: "error", message: error.message });
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
