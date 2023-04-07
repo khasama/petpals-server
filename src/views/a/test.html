@@ -79,6 +79,45 @@
             <button id="addPet">Add</button>
         </div>
 
+        <hr>
+
+        <div style="display: flex; flex-wrap:wrap; justify-content: space-around;">
+            <div>
+                <h3>Products</h3>
+                <table style="border: 1px #000 solid;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px #000 solid;">Product</th>
+                            <th style="border: 1px #000 solid;">Price</th>
+                            <th style="border: 1px #000 solid;">Quantity</th>
+                            <th style="border: 1px #000 solid;">
+                                <a href="javascript:void(0)">🛠</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableContent">
+
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h3>Cart</h3>
+                <table style="border: 1px #000 solid;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px #000 solid;">Product</th>
+                            <th style="border: 1px #000 solid;">Price</th>
+                            <th style="border: 1px #000 solid;">Quantity</th>
+                            <th style="border: 1px #000 solid;">
+                                <a href="javascript:void(0)">🛠</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableContent">
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -96,6 +135,7 @@
                         $("#idUser").val(user.id);
                         sessionStorage.setItem('aT', user.accessToken)
                         alert('success');
+                        getCart()
                     } else {
                         alert(`Error: ${result.message}`);
                     }
@@ -208,6 +248,163 @@
                 alert(`Bạn chưa đăng nhập`);
             }
         });
+
+        getProduct();
+        function getProduct() {
+            $.ajax({
+                url: `${api}product/`,
+                success: (result) => {
+                    if (result.status == "success") {
+                        const products = result.data;
+                        const list = $("#productTableContent");
+                        products.forEach((ele) => {
+                            list.append(`
+                            <tr>
+                                <td style="border: 1px #000 solid;">
+                                    ${ele.name}
+                                </td>
+                                <td style="border: 1px #000 solid;">
+                                    ${ele.price}
+                                </td>
+                                <td style="border: 1px #000 solid;">
+                                    <input type="number" id="product-${ele._id}" min="1" value="1">
+                                </td>
+                                <td style="border: 1px #000 solid;">
+                                    <a href="javascript:void(0)" onclick="addCart(this)"
+                                        data-id="${ele._id}">Add cart</a>
+                                </td>
+                            </tr>
+                            `);
+                        });
+                    }
+                }
+            });
+        }
+
+        function addCart(ele) {
+            const idProduct = $(ele).attr("data-id");
+            const quantity = $(`#product-${idProduct}`).val();
+            const idUser = $("#idUser").val().trim();
+            const accessToken = sessionStorage.getItem('aT');
+            if (idUser) {
+                $.ajax({
+                    type: "POST",
+                    url: `${api}cart/add`,
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                    data: { idUser, idProduct, quantity },
+                    success: (result) => {
+                        if (result.status == "success") {
+                            const carts = result.data.products;
+                            const list = $("#cartTableContent");
+                            list.html('');
+                            carts.forEach((ele) => {
+                                list.append(`
+                                <tr>
+                                    <td style="border: 1px #000 solid;">
+                                        ${ele.product.name}
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        ${ele.product.price}
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        <input type="number" id="uproduct-${ele.product._id}" min="1" value="${ele.quantity}">
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        <a href="javascript:void(0)" onclick="updateCart(this)"
+                                            data-id="${ele.product._id}">Update cart</a>
+                                    </td>
+                                </tr>
+                                `);
+                            });
+                        } else {
+                            alert(`${result.message}`);
+                        }
+                    }
+                });
+            }
+        }
+
+        function getCart() {
+            const idUser = $("#idUser").val().trim();
+            const accessToken = sessionStorage.getItem('aT');
+            $.ajax({
+                type: "POST",
+                url: `${api}cart/get`,
+                headers: { Authorization: `Bearer ${accessToken}` },
+                data: { idUser },
+                success: (result) => {
+                    if (result.status == "success") {
+                        const carts = result.data.products;
+                        const list = $("#cartTableContent");
+                        carts.forEach((ele) => {
+                            list.append(`
+                                <tr>
+                                    <td style="border: 1px #000 solid;">
+                                        ${ele.product.name}
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        ${ele.product.price}
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        <input type="number" id="uproduct-${ele.product._id}" min="1" value="${ele.quantity}">
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        <a href="javascript:void(0)" onclick="updateCart(this)"
+                                            data-id="${ele.product._id}">Update cart</a>
+                                    </td>
+                                </tr>
+                                `);
+                        });
+                    } else {
+                        alert(`${result.message}`);
+                    }
+                }
+            });
+        }
+
+        function updateCart(ele) {
+            const idProduct = $(ele).attr("data-id");
+            const quantity = $(`#uproduct-${idProduct}`).val();
+            const idUser = $("#idUser").val().trim();
+            const accessToken = sessionStorage.getItem('aT');
+            if (idUser) {
+                $.ajax({
+                    type: "POST",
+                    url: `${api}cart/update`,
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                    data: { idUser, idProduct, quantity },
+                    success: (result) => {
+                        if (result.status == "success") {
+                            const carts = result.data.products;
+                            const list = $("#cartTableContent");
+                            list.html('');
+                            carts.forEach((ele) => {
+                                list.append(`
+                                <tr>
+                                    <td style="border: 1px #000 solid;">
+                                        ${ele.product.name}
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        ${ele.product.price}
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        <input type="number" id="uproduct-${ele.product._id}" min="1" value="${ele.quantity}">
+                                    </td>
+                                    <td style="border: 1px #000 solid;">
+                                        <a href="javascript:void(0)" onclick="updateCart(this)"
+                                            data-id="${ele.product._id}">Update cart</a>
+                                    </td>
+                                </tr>
+                                `);
+                            });
+                        } else {
+                            alert(`${result.message}`);
+                        }
+                    }
+                });
+            }
+        }
+
 
     </script>
 </body>
