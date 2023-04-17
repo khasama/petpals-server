@@ -133,7 +133,7 @@
                     if (result.status == "success") {
                         const user = result.data;
                         $("#idUser").val(user.id);
-                        sessionStorage.setItem('aT', user.accessToken)
+                        sessionStorage.setItem('aT', user.accessToken);
                         alert('success');
                         getCart()
                     } else {
@@ -286,12 +286,20 @@
             const quantity = $(`#product-${idProduct}`).val();
             const idUser = $("#idUser").val().trim();
             const accessToken = sessionStorage.getItem('aT');
+
             if (idUser) {
                 $.ajax({
                     type: "POST",
                     url: `${api}cart/add`,
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                    },
                     data: { idUser, idProduct, quantity },
+                    xhrFields: {
+                        withCredentials: true
+                    },
                     success: (result) => {
                         if (result.status == "success") {
                             const carts = result.data.products;
@@ -332,6 +340,9 @@
                 url: `${api}cart/get`,
                 headers: { Authorization: `Bearer ${accessToken}` },
                 data: { idUser },
+                xhrFields: {
+                    withCredentials: true
+                },
                 success: (result) => {
                     if (result.status == "success") {
                         const carts = result.data.products;

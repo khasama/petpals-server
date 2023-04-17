@@ -10,9 +10,11 @@ const session = require("express-session");
 // const compression = require("compression");
 const connect = require("./src/configs/mongo");
 const fileUpload = require("express-fileupload");
-// const Redis = require("ioredis");
-// const RedisStore = require("connect-redis").default;
-// const clientRedis = new Redis();
+const Redis = require("ioredis");
+const RedisStore = require("connect-redis").default;
+const clientRedis = new Redis();
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 const io = require("socket.io")(server, {
     cors: {
         origin: "*",
@@ -37,7 +39,7 @@ app.use(
 );
 app.use(
     session({
-        // store: new RedisStore({ client: clientRedis }),
+        store: new RedisStore({ client: clientRedis }),
         secret: process.env.SESION_SECRET,
         resave: false,
         saveUninitialized: true,
