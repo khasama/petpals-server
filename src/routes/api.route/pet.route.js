@@ -7,6 +7,6 @@ const { verifyUser } = require("../../middlewares");
 router.get("/:id", verifyUser, PetController.getPet);
 router.put("/:id", verifyUser, PetController.updatePet);
 router.post("/", PetController.addPet);
-// router.get("/", PetController.getAllPet);
+router.get("/", PetController.getAllPet);
 
 module.exports = router;

@@ -16,7 +16,9 @@ PetService.getAllPet = async (query) => {
         let pets = await PetModel
             .find(filter)
             .sort({ 'createdAt': 'desc' })
-            .limit(limit).skip((page - 1) * limit);
+            .limit(limit).skip((page - 1) * limit)
+            .populate('category')
+            .populate('subcategory');
         pets = JSON.parse(JSON.stringify(pets));
         pets = pets.map(pet => {
             return { ...pet, ...{ thumb: `${global.domain}media/image/${pet.images[0]}` } }
@@ -29,7 +31,7 @@ PetService.getAllPet = async (query) => {
 
 PetService.getPet = async (_id) => {
     try {
-        let pet = JSON.parse(JSON.stringify(await PetModel.findById({ _id }).populate('owner')));
+        let pet = JSON.parse(JSON.stringify(await PetModel.findById({ _id }).populate('owner').populate('subcategory')));
         if (pet) {
             let images = pet.images;
             images = images.map(image => {
