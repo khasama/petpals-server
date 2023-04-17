@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
 });
 
 // app.use(compression());
-// app.use("/api/v1", require("./src/routes"));
 app.use(require("./src/routes"));
 
 connect();
