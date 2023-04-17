@@ -25,6 +25,7 @@ jobs:
             - run: touch .env
             - run: echo PORT=${{ secrets.PORT }} >> .env
             - run: echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
+            - run: echo DOMAIN=${{ secrets.DOMAIN }} >> .env
             - run: echo SESION_SECRET=${{ secrets.SESION_SECRET }} >> .env
             - run: echo MONGO_URI=${{ secrets.MONGO_URI }} >> .env
             - run: echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
