@@ -485,14 +485,14 @@ function viewImage(ele) {
 }
 
 function login() {
-    const username = $("#username").val();
+    const email = $("#email").val();
     const password = $("#password").val();
-    if (username && password) {
+    if (email && password) {
         $.ajax({
             type: "POST",
             url: `${api}/auth/login`,
             data: {
-                username,
+                email,
                 password
             },
             success: (result) => {

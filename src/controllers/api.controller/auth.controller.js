@@ -5,9 +5,9 @@ const AuthController = {};
 
 AuthController.register = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-        if (username && password) {
-            const result = await AuthService.register(username, password);
+        const { email, password } = req.body;
+        if (email && password) {
+            const result = await AuthService.register(email, password);
             if (result) return res.status(200).json({ status: "success" });
             return res.status(200).json({ status: "failed", message: "Something wrong !!" });
         }
@@ -19,9 +19,9 @@ AuthController.register = async (req, res, next) => {
 
 AuthController.login = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-        if (username && password) {
-            const data = await AuthService.login(username, password);
+        const { email, password } = req.body;
+        if (email && password) {
+            const data = await AuthService.login(email, password);
             req.session.access_token = data.accessToken;
             req.session.user = data;
             return res.status(200).json({ status: "success", data });
