@@ -26,7 +26,11 @@ ProductService.getAllProduct = async (query) => {
 
 ProductService.getProduct = async (_id) => {
     try {
-        const product = JSON.parse(JSON.stringify(await ProductModel.findById({ _id })));
+        const product = JSON.parse(JSON.stringify(
+            await ProductModel.findById({ _id })
+                .populate('item')
+                .populate('subitem')
+        ));
         if (product) {
             let images = product.images;
             images = images.map(image => {
@@ -35,6 +39,24 @@ ProductService.getProduct = async (_id) => {
             return { ...product, ...{ images } };
         }
         throw new Error("Not found");
+    } catch (error) {
+        throw error;
+    }
+};
+
+ProductService.getRecommendProducts = async (_id) => {
+    try {
+        const subitem = JSON.parse(JSON.stringify(await ProductModel.findById({ _id }))).subitem;
+        let products = JSON.parse(JSON.stringify(
+            await ProductModel.find({ subitem })
+                .populate('item')
+                .populate('subitem')
+                .limit(10)
+        ));
+        products = products.filter(product => {
+            if (product._id != _id) return { ...product, ...{ thumb: `${global.domain}media/image/${product.images[0]}` } }
+        });
+        return products;
     } catch (error) {
         throw error;
     }

@@ -31,7 +31,12 @@ PetService.getAllPet = async (query) => {
 
 PetService.getPet = async (_id) => {
     try {
-        let pet = JSON.parse(JSON.stringify(await PetModel.findById({ _id }).populate('owner').populate('subcategory')));
+        let pet = JSON.parse(JSON.stringify(
+            await PetModel.findById({ _id })
+                .populate('owner')
+                .populate('category')
+                .populate('subcategory')
+        ));
         if (pet) {
             let images = pet.images;
             images = images.map(image => {
@@ -143,6 +148,25 @@ PetService.deletePetImage = async (_id, image) => {
         } else {
             throw new Error('Mỗi sản phẩm phải có ít nhất 1 ảnh');
         }
+    } catch (error) {
+        throw error;
+    }
+};
+
+PetService.getRecommendPets = async (_id) => {
+    try {
+        const subcategory = JSON.parse(JSON.stringify(await PetModel.findById({ _id }))).subcategory;
+        let pets = JSON.parse(JSON.stringify(
+            await PetModel.find({ subcategory })
+                .populate('owner')
+                .populate('category')
+                .populate('subcategory')
+                .limit(10)
+        ));
+        pets = pets.filter(pet => {
+            if (pet._id != _id) return { ...pet, ...{ thumb: `${global.domain}media/image/${pet.images[0]}` } }
+        });
+        return pets;
     } catch (error) {
         throw error;
     }

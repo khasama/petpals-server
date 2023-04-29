@@ -4,9 +4,10 @@ const { PetController } = require("../../controllers/api.controller");
 
 const { verifyUser } = require("../../middlewares");
 
-router.get("/:id", verifyUser, PetController.getPet);
+router.get("/recommend/:id", PetController.getRecommendPets);
+router.get("/:id", PetController.getPet);
 router.put("/:id", verifyUser, PetController.updatePet);
-router.post("/", PetController.addPet);
+router.post("/", verifyUser, PetController.addPet);
 router.get("/", PetController.getAllPet);
 
 module.exports = router;

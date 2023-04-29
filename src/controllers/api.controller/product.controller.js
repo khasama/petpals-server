@@ -24,5 +24,17 @@ ProductController.getProduct = async (req, res, next) => {
         return res.status(200).json({ status: "failed", message: error.message });
     }
 };
+ProductController.getRecommendProducts = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (id) {
+            const products = await ProductService.getRecommendProducts(id);
+            return res.status(200).json({ status: "success", data: products });
+        }
+        return res.status(200).json({ status: "failed", message: 'Missing params' });
+    } catch (error) {
+        return res.status(200).json({ status: "failed", message: error.message });
+    }
+};
 
 module.exports = ProductController;

@@ -32,4 +32,11 @@ AuthController.login = async (req, res, next) => {
     }
 };
 
+AuthController.logout = async (req, res, next) => {
+    req.session.destroy((err) => {
+        if (err) return res.status(200).json({ status: "failed", message: err.message });
+        return res.status(200).json({ status: "success" });
+    });
+};
+
 module.exports = AuthController;

@@ -87,4 +87,17 @@ PetController.deletePetImage = async (req, res, next) => {
     }
 };
 
+PetController.getRecommendPets = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (id) {
+            const pets = await PetService.getRecommendPets(id);
+            return res.status(200).json({ status: "success", data: pets });
+        }
+        return res.status(200).json({ status: "failed", message: 'Missing params' });
+    } catch (error) {
+        return res.status(200).json({ status: "failed", message: error.message });
+    }
+};
+
 module.exports = PetController;
