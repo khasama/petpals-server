@@ -58,8 +58,16 @@ CartService.updateCart = async (idUser, idProduct, quantity) => {
 
 CartService.getCart = async (idUser) => {
     try {
-        const cart = await CartModel.findOne({ user: idUser }).populate('products.product');
-        if (cart) return cart;
+        let cart = JSON.parse(JSON.stringify(await CartModel.findOne({ user: idUser }).populate('products.product')));
+        if (cart) {
+            cart = cart.products.map(p => {
+                return {
+                    product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
+                    quantity: p.quantity
+                };
+            });
+            return cart;
+        }
         return [];
     } catch (error) {
         throw error;

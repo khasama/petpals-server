@@ -12,7 +12,7 @@ AUthService.login = async (email, password) => {
             const hashPass = user.password;
             const match = await bcrypt.compare(password, hashPass);
             if (match) {
-                const cart = await CartModel.findOne({ user: user._id }).populate('products.product');;
+                let cart = JSON.parse(JSON.stringify(await CartModel.findOne({ user: user._id }).populate('products.product')));
                 const payload = {
                     id: user._id,
                     role: user.role,
@@ -22,8 +22,16 @@ AUthService.login = async (email, password) => {
                     address: user.address,
                     email: user.email,
                 };
+                if (cart) {
+                    cart = cart.products.map(p => {
+                        return {
+                            product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
+                            quantity: p.quantity
+                        };
+                    });
+                }
                 const accessToken = await signAccessToken(payload);
-                return { ...payload, ...{ accessToken }, ...{ cart: cart?.products || [] } };
+                return { ...payload, ...{ accessToken }, ...{ cart: cart || [] } };
             } else {
                 throw new Error("Wrong pass !!!");
             }
