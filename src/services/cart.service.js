@@ -27,7 +27,13 @@ CartService.addCart = async (idUser, idProduct, quantity) => {
             });
             await newCart.save();
         }
-        const cartDetail = await CartModel.findOne({ user: idUser }).populate('products.product');
+        let cartDetail = JSON.parse(JSON.stringify(await CartModel.findOne({ user: idUser }).populate('products.product')));
+        cartDetail = cartDetail.products.map(p => {
+            return {
+                product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
+                quantity: p.quantity
+            };
+        });
         return cartDetail;
     } catch (error) {
         throw error;
@@ -46,7 +52,13 @@ CartService.updateCart = async (idUser, idProduct, quantity) => {
                 products.splice(i, 1);
             }
             await CartModel.findOneAndUpdate({ user: idUser }, { products });
-            const cartDetail = await CartModel.findOne({ user: idUser }).populate('products.product');
+            let cartDetail = JSON.parse(JSON.stringify(await CartModel.findOne({ user: idUser }).populate('products.product')));
+            cartDetail = cartDetail.products.map(p => {
+                return {
+                    product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
+                    quantity: p.quantity
+                };
+            });
             return cartDetail;
         } else {
             throw new Error("Not found cart !!");
