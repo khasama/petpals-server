@@ -31,7 +31,7 @@ CartController.updateCart = async (req, res, next) => {
 
 CartController.getCart = async (req, res, next) => {
     try {
-        const { idUser } = req.body;
+        const { idUser } = req.params;
         if (idUser) {
             const data = await CartService.getCart(idUser);
             return res.status(200).json({ status: "success", data });

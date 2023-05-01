@@ -4,6 +4,6 @@ const { CartController } = require("../../controllers/api.controller");
 
 router.post("/add", CartController.addCart);
 router.post("/update", CartController.updateCart);
-router.post("/get", CartController.getCart);
+router.get("/:idUser", CartController.getCart);
 
 module.exports = router;
