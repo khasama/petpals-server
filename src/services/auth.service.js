@@ -12,7 +12,7 @@ AUthService.login = async (email, password) => {
             const hashPass = user.password;
             const match = await bcrypt.compare(password, hashPass);
             if (match) {
-                let cart = JSON.parse(JSON.stringify(await CartModel.findOne({ user: user._id }).populate('products.product')));
+                let cart = await CartModel.findOne({ user: user._id }).populate('products.product').lean();
                 const payload = {
                     id: user._id,
                     role: user.role,

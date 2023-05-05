@@ -7,19 +7,23 @@ const PetService = {};
 
 PetService.getAllPet = async (query) => {
     try {
-        let { page, limit, category, subcategory } = query;
+        let { page, limit, category, subcategory, price, latest } = query;
         let filter = { deleted: false };
+        let sort = { 'createdAt': 'desc' };
         if (!page || page < 0) page = 1;
         if (!limit || limit < 0) limit = 20;
         if (category) filter = { ...filter, ...{ category } };
         if (subcategory) filter = { ...filter, ...{ subcategory } };
+        if (price) sort = { price };
+        if (latest && latest == 1) sort = { 'createdAt': 'desc' };
+        if (latest && latest == 0) sort = { 'createdAt': 'asc' };
         let pets = await PetModel
             .find(filter)
-            .sort({ 'createdAt': 'desc' })
+            .sort(sort)
             .limit(limit).skip((page - 1) * limit)
             .populate('category')
-            .populate('subcategory');
-        pets = JSON.parse(JSON.stringify(pets));
+            .populate('subcategory')
+            .lean();
         pets = pets.map(pet => {
             return { ...pet, ...{ thumb: `${global.domain}media/image/${pet.images[0]}` } }
         });
@@ -31,12 +35,11 @@ PetService.getAllPet = async (query) => {
 
 PetService.getPet = async (_id) => {
     try {
-        let pet = JSON.parse(JSON.stringify(
-            await PetModel.findById({ _id })
-                .populate('owner')
-                .populate('category')
-                .populate('subcategory')
-        ));
+        let pet = await PetModel.findById({ _id })
+            .populate('owner')
+            .populate('category')
+            .populate('subcategory')
+            .lean();
         if (pet) {
             let images = pet.images;
             images = images.map(image => {
@@ -55,7 +58,7 @@ PetService.getPet = async (_id) => {
 
 PetService.updatePet = async (_id, name, price, description, category, subcategory, images, idUser) => {
     try {
-        const currentPet = JSON.parse(JSON.stringify(await PetModel.findById({ _id })));
+        const currentPet = await PetModel.findById({ _id }).lean();
         const owner = currentPet.owner;
         if (owner == idUser) {
             const imgs = currentPet.images;
@@ -155,14 +158,13 @@ PetService.deletePetImage = async (_id, image) => {
 
 PetService.getRecommendPets = async (_id) => {
     try {
-        const subcategory = JSON.parse(JSON.stringify(await PetModel.findById({ _id }))).subcategory;
-        let pets = JSON.parse(JSON.stringify(
-            await PetModel.find({ subcategory })
-                .populate('owner')
-                .populate('category')
-                .populate('subcategory')
-                .limit(10)
-        ));
+        const subcategory = await PetModel.findById({ _id }).lean().subcategory;
+        let pets = await PetModel.find({ subcategory })
+            .populate('owner')
+            .populate('category')
+            .populate('subcategory')
+            .limit(10)
+            .lean();
         pets = pets.filter(pet => {
             if (pet._id != _id) return { ...pet, ...{ thumb: `${global.domain}media/image/${pet.images[0]}` } }
         });

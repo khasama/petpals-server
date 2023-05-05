@@ -4,17 +4,21 @@ const ProductService = {};
 
 ProductService.getAllProduct = async (query) => {
     try {
-        let { page, limit, item, subitem } = query;
+        let { page, limit, item, subitem, price, latest } = query;
         let filter = { deleted: false };
+        let sort = { 'createdAt': 'desc' };
         if (!page || page < 0) page = 1;
         if (!limit || limit < 0) limit = 20;
         if (item) filter = { ...filter, ...{ item } };
         if (subitem) filter = { ...filter, ...{ subitem } };
+        if (price) sort = { price };
+        if (latest && latest == 1) sort = { 'createdAt': 'desc' };
+        if (latest && latest == 0) sort = { 'createdAt': 'asc' };
         let products = await ProductModel
             .find(filter)
-            .sort({ 'createdAt': 'desc' })
-            .limit(limit).skip((page - 1) * limit);
-        products = JSON.parse(JSON.stringify(products));
+            .sort(sort)
+            .limit(limit).skip((page - 1) * limit)
+            .lean();
         products = products.map(product => {
             return { ...product, ...{ thumb: `${global.domain}media/image/${product.images[0]}` } }
         });
@@ -26,11 +30,10 @@ ProductService.getAllProduct = async (query) => {
 
 ProductService.getProduct = async (_id) => {
     try {
-        const product = JSON.parse(JSON.stringify(
-            await ProductModel.findById({ _id })
-                .populate('item')
-                .populate('subitem')
-        ));
+        const product = await ProductModel.findById({ _id })
+            .populate('item')
+            .populate('subitem')
+            .lean();
         if (product) {
             let images = product.images;
             images = images.map(image => {
@@ -46,13 +49,12 @@ ProductService.getProduct = async (_id) => {
 
 ProductService.getRecommendProducts = async (_id) => {
     try {
-        const subitem = JSON.parse(JSON.stringify(await ProductModel.findById({ _id }))).subitem;
-        let products = JSON.parse(JSON.stringify(
-            await ProductModel.find({ subitem })
-                .populate('item')
-                .populate('subitem')
-                .limit(10)
-        ));
+        const subitem = await ProductModel.findById({ _id }).lean().subitem;
+        let products = await ProductModel.find({ subitem })
+            .populate('item')
+            .populate('subitem')
+            .limit(10)
+            .lean();
         products = products.filter(product => {
             if (product._id != _id) return { ...product, ...{ thumb: `${global.domain}media/image/${product.images[0]}` } }
         });
