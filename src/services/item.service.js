@@ -7,9 +7,9 @@ const ItemService = {};
 ItemService.getAllItem = async () => {
     try {
         const data = [];
-        const items = await ItemModel.find().lean();
+        const items = JSON.parse(JSON.stringify(await ItemModel.find()));
         for (const item of items) {
-            const subitem = await SubitemModel.find({ item: item._id }).lean();
+            const subitem = JSON.parse(JSON.stringify(await SubitemModel.find({ item: item._id })));
             data.push({ ...item, subitem });
         }
         return data;
@@ -20,8 +20,8 @@ ItemService.getAllItem = async () => {
 
 ItemService.getItem = async (_id) => {
     try {
-        const item = await ItemModel.findById({ _id }).lean();
-        const subitem = await SubitemModel.find({ item: item._id }).lean();
+        const item = JSON.parse(JSON.stringify(await ItemModel.findById({ _id })));
+        const subitem = JSON.parse(JSON.stringify(await SubitemModel.find({ item: item._id })));
         return { ...item, subitem };
     } catch (error) {
         throw error;
@@ -33,7 +33,13 @@ ItemService.getProductOfItem = async (_id, query) => {
         let { page, limit } = query;
         if (!page || page < 0) page = 1;
         if (!limit || limit < 0) limit = 20;
-        let products = await ProductModel.find({ item: _id, deleted: false }).limit(limit).skip((page - 1) * limit).lean();
+        let products = JSON.parse(
+            JSON.stringify(
+                await ProductModel
+                    .find({ item: _id, deleted: false })
+                    .limit(limit).skip((page - 1) * limit)
+            )
+        );
         products = products.map(product => {
             return { ...product, ...{ thumb: `${global.domain}media/image/${product.images[0]}` } }
         });

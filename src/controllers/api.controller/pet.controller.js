@@ -13,6 +13,19 @@ PetController.getAllPet = async (req, res, next) => {
     }
 };
 
+PetController.getMyPets = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (id) {
+            const pet = await PetService.getMyPets(id);
+            if (pet) return res.status(200).json({ status: "success", data: pet });
+        }
+        return res.status(200).json({ status: "failed", message: 'Missing params' });
+    } catch (error) {
+        return res.status(200).json({ status: "failed", message: error.message });
+    }
+};
+
 PetController.getPet = async (req, res, next) => {
     try {
         const id = req.params.id;

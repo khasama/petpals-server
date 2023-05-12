@@ -4,7 +4,7 @@ const CartService = {};
 
 CartService.addCart = async (idUser, idProduct, quantity) => {
     try {
-        const cart = await CartModel.findOne({ user: idUser }).lean();
+        const cart = JSON.parse(JSON.stringify(await CartModel.findOne({ user: idUser })));
         if (cart) {
             let products = cart.products;
             const i = products.findIndex(e => e.product === idProduct);
@@ -27,7 +27,13 @@ CartService.addCart = async (idUser, idProduct, quantity) => {
             });
             await newCart.save();
         }
-        let cartDetail = await CartModel.findOne({ user: idUser }).populate('products.product').lean();
+        let cartDetail = JSON.parse(
+            JSON.stringify(
+                await CartModel
+                    .findOne({ user: idUser })
+                    .populate('products.product')
+            )
+        );
         cartDetail = cartDetail.products.map(p => {
             return {
                 product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
@@ -42,7 +48,7 @@ CartService.addCart = async (idUser, idProduct, quantity) => {
 
 CartService.updateCart = async (idUser, idProduct, quantity) => {
     try {
-        const cart = await CartModel.findOne({ user: idUser }).lean();
+        const cart = JSON.parse(JSON.stringify(await CartModel.findOne({ user: idUser })));
         if (cart) {
             let products = cart.products;
             const i = products.findIndex(e => e.product === idProduct);
@@ -52,7 +58,11 @@ CartService.updateCart = async (idUser, idProduct, quantity) => {
                 products.splice(i, 1);
             }
             await CartModel.findOneAndUpdate({ user: idUser }, { products });
-            let cartDetail = await CartModel.findOne({ user: idUser }).populate('products.product').lean();
+            let cartDetail = JSON.parse(
+                JSON.stringify(
+                    await CartModel.findOne({ user: idUser }).populate('products.product')
+                )
+            );
             cartDetail = cartDetail.products.map(p => {
                 return {
                     product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
@@ -70,7 +80,11 @@ CartService.updateCart = async (idUser, idProduct, quantity) => {
 
 CartService.getCart = async (idUser) => {
     try {
-        let cart = await CartModel.findOne({ user: idUser }).populate('products.product').lean();
+        let cart = JSON.parse(
+            JSON.stringify(
+                await CartModel.findOne({ user: idUser }).populate('products.product')
+            )
+        );
         if (cart) {
             cart = cart.products.map(p => {
                 return {
