@@ -1,5 +1,6 @@
 const CartModel = require("../models/cart.model");
 const OrderModel = require("../models/order.model");
+const { sendMail } = require("../utils/mail");
 
 const CheckoutService = {};
 
@@ -11,7 +12,7 @@ CheckoutService.checkout = async (idUser, pM, fullName, email, address, phone) =
         let cart = JSON.parse(JSON.stringify(await CartModel.findOne({ user: idUser }).populate('products.product')));
         cart = cart.products.map(p => {
             return {
-                product: { ...p.product, ...{ thumb: `${global.domain}media/image/${p.product.images[0]}` } },
+                product: p.product,
                 quantity: p.quantity
             };
         });
@@ -27,12 +28,30 @@ CheckoutService.checkout = async (idUser, pM, fullName, email, address, phone) =
             payment: paymentMethod
         });
         await newOrder.save();
+        await sendMail(newOrder);
         await CartModel.findOneAndUpdate({ user: idUser }, { products: [] });
         if (pM == 1) return newOrder._id;
         return;
     } catch (error) {
+        console.log(error);
         throw error;
     }
 };
+
+CheckoutService.getMyOrders = async (idUser) => {
+    try {
+        const orders = JSON.parse(
+            JSON.stringify(
+                await OrderModel.find({ user: idUser })
+                    .populate('products.product')
+            )
+        );
+        return orders;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 
 module.exports = CheckoutService;
