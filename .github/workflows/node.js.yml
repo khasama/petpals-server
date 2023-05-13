@@ -37,5 +37,7 @@ jobs:
             - run: echo FOLDER_IMAGE_USERS=${{ secrets.FOLDER_IMAGE_USERS }} >> .env
             - run: echo ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }} >> .env
             - run: echo REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }} >> .env
+            - run: echo MAILER_MAIL=${{ secrets.MAILER_MAIL }} >> .env
+            - run: echo MAILER_PASS=${{ secrets.MAILER_PASS }} >> .env
             # - run: npm i
             # - run: pm2 restart petpals
