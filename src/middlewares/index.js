@@ -6,6 +6,8 @@ module.exports = {
         return (req, res, next) => {
             const token = req.session.access_token;
             if (!token) {
+                req.session.access_token = undefined;
+                req.session.user = undefined;
                 return res.redirect('/login');
             }
 
@@ -13,26 +15,32 @@ module.exports = {
                 token,
                 process.env.ACCESS_TOKEN_SECRET,
                 (err, payload) => {
-                    if (err) return next(createError.Unauthorized());
-                    const role = payload.role;
+                    if (!err) {
+                        const role = payload.role;
+                        switch (type) {
+                            case 1:
+                                if (role == "admin") {
+                                    next();
+                                    break;
+                                }
+                                return res.redirect('/login');
 
-                    switch (type) {
-                        case 1:
-                            if (role == "admin") {
-                                next();
-                                break;
-                            }
-                            return next(createError.Forbidden());
+                            case 2:
+                                if (role == "admin" || role == "mob") {
+                                    next();
+                                    break;
+                                }
+                                return res.redirect('/login');
 
-                        case 2:
-                            if (role == "admin" || role == "mob") {
-                                next();
-                                break;
-                            }
-                            return next(createError.Forbidden());
+                            default:
+                                return res.redirect('/login');
+                        }
 
-                        default:
-                            return next(createError.Unauthorized());
+                    } else {
+                        console.log({ err });
+                        req.session.access_token = undefined;
+                        req.session.user = undefined;
+                        return res.redirect("/login");
                     }
                 }
             );

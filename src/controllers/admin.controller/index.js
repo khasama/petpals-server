@@ -3,6 +3,7 @@ const ItemController = require("./item.controller");
 const ProductController = require("./product.controller");
 const PetController = require("./pet.controller");
 const UserController = require("./user.controller");
+const OrderController = require("./order.controller");
 
 const AdminController = {};
 
@@ -28,5 +29,6 @@ module.exports = {
     ProductController,
     PetController,
     UserController,
+    OrderController,
     AdminController,
 }

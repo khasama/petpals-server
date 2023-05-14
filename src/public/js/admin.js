@@ -290,6 +290,34 @@ $(document).ready(function () {
     });
 });
 
+function showDetailOrder(ele) {
+    const detail = JSON.parse($(ele).attr('data-detail'));
+    $("#orderDetailModal").modal('show');
+    const list = $("#orderDetailRow");
+    list.html("");
+    detail.forEach((ele) => {
+        list.append(
+            `
+                <tr id=${ele.product._id}>
+                    <td>
+                        ${ele.product._id}
+                    </td>
+                    <td>
+                        ${ele.product.name}
+                    </td>
+                    <td>
+                        ${ele.product.price}
+                    </td>
+                    <td>
+                        ${ele.quantity}
+                    </td>
+                </tr>
+            `
+        );
+    });
+    console.log(detail);
+}
+
 function resetSubcategoryTable(subcategories) {
     subcategoryTable.destroy();
     const list = $("#subcategoryData");
