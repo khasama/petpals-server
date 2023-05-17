@@ -4,4 +4,4 @@ pet shop (dacn2)
 
 # Screens Shot
 
-![1](https://github.com/khasama/petpals-server/main/src/public/img/icon.png?raw=true)
+![1](https://github.com/khasama/petpals-server/blob/main/screenshot/1.jpg?raw=true)
