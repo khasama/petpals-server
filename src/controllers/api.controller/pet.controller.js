@@ -61,7 +61,7 @@ PetController.updatePet = async (req, res, next) => {
         const id = req.params.id;
         const { name, price, description, category, subcategory, idUser } = req.body;
         const images = req.files;
-        if (id && name && price && description && category && subcategory && images && idUser) {
+        if (id && name && price && description && category && subcategory && idUser) {
             const result = await PetService.updatePet(id, name, price, description, category, subcategory, images, idUser);
             if (result) return res.status(200).json({ status: "success" });
             return res.status(200).json({ status: "failed", message: 'Something wrong !!' });

@@ -174,6 +174,7 @@ PetService.deletePetImage = async (_id, image) => {
                 return img !== image;
             });
             await PetModel.findOneAndUpdate({ _id }, { images });
+            return true;
         } else {
             throw new Error('Mỗi sản phẩm phải có ít nhất 1 ảnh');
         }
