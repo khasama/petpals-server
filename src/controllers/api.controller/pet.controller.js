@@ -94,9 +94,8 @@ PetController.deletePetImage = async (req, res, next) => {
             if (result) return res.status(200).json({ status: "success" });
         }
         return res.status(200).json({ status: "failed", message: "missing params" });
-
     } catch (error) {
-        return res.status(500)
+        return res.status(200).json({ status: "failed", message: error.message });
     }
 };
 
