@@ -115,7 +115,7 @@ PetService.updatePet = async (_id, name, price, description, category, subcatego
 
             pet = { ...pet, ...{ images: [...arrImgs, ...imgs] } };
             await PetModel.findOneAndUpdate({ _id }, pet);
-            return res.status(200).json({ status: "success" });
+            return true;
         } else { throw new Error("Not the owner"); }
 
     } catch (error) {
